@@ -1,5 +1,6 @@
 \documentclass{SovJurn/JETPL}
 \usepackage{cite} % много ссылок через дефис
+\usepackage[dvipsnames]{xcolor}
 
 \twocolumn
 
@@ -14,7 +15,7 @@
 %%% article title - for table of contents (usualy identical with \title)
 \sodtitle{recombination}
 %%% author(s) ( + e-mail)
-\author{A.~L.~Barabanov$^{1,2}$, K.\,M.\,Belotsky$^{1}$\/, E.~A.~Esipova$^{1}$, D.~S.~Kalashnikov$^{1}$ \, A.~Yu.~Letunov$^{1,2,3}$}
+\author{A.~L.~Barabanov$^{1,2}$, K.\,M.\,Belotsky$^{1}$\/, E.~A.~Esipova$^{1}$, D.~S.~Kalashnikov$^{1}$ \, A.~Yu.~Letunov$^{1,2}$}
 
 %%% author(s) - for colontitle (at the top of the page)
 \rauthor{A.\,L.\,Barabanov, et al.}
@@ -24,7 +25,6 @@
 %%% author's address(es)
 \address{$^1$National Research Nuclear University MEPhI, Moscow, Russia\\}
 \address{$^2$National Research Centre “Kurchatov Institute”, Moscow, Russia\\}
-\address{$^3$Russian Federal Nuclear Center – All-Russian Institute of Technical Physics (RFNC-VNIITF), Snezhinsk, Russia}
 
 %%% dates of submition & resubmition (if submitted once, second argument is *)
 \dates{\today}
@@ -32,236 +32,273 @@
 \abstract{The quantum-mechanical solution for the problem of radiative recombination of an electron in the Coulomb field has been known for a long time. However, in astrophysics, the classical approach is sometimes used to treat similar problems. It is shown that the direct use of classical electrodynamics to consider recombination is not adequate due to quantization of the angular momentum. The semiclassical approach, which takes into account such quantization, is proposed, and its consistence with the exact quantum consideration is shown. Possible areas of applicability of the classical approach to problems analogous to radiative recombination are outlined.
 The question of which approach is applicable %issue is of special importance  which approach is applicable 
 is of particular relevance in cosmological models of self-interacting dark matter, where recombination processes play crucial role in the evolution of large scale structure of the Universe.}
-%\textbf{Добавить астрофизики}
-
 
 \maketitle
 \section{Introduction}
-
-The problem of radiative recombination (RR) of an electron in the Coulomb field is thoroughly studied in atomic physics --- see, e.g., the detailed review of Kotelnikov and Milstein \cite{kotelnikov2019electron} with the extensive bibliography and explanations about the significance of this problem for many applications, including those outside of atomic physics. The approximate expression for the recombination cross section was obtained for the first time by Kramers almost a hundred years ago \cite{kramers1923xciii}:
+The problem of radiative recombination (RR) of an electron in the Coulomb field is thoroughly studied in atomic physics --- see, e.g., the detailed review of Kotelnikov and Milstein \cite{kotelnikov2019electron} with an extensive bibliography and explanations about the significance of this problem for many applications, including those outside of atomic physics. The approximate expression for the recombination cross section was obtained for the first time by Kramers almost a hundred years ago \cite{kramers1923xciii}:
 \begin{equation}
 \label{1.2}
 \sigma^{\rm K}_{n}(\eta)=\frac{32\pi}{3\sqrt{3}}\,\alpha^3a_B^2\,\frac{\eta^4}{n(n^2+\eta^2)}\,.
 \end{equation}
-Here, $\alpha=e^2/(\hbar c)\simeq 1/137$ is the fine structure constant, $n$ is the principle quantum number, $a_B=\hbar^2/(me^2)$ is the Bohr radius, where $m$ is the mass of the electron, and dimensionless parameter $\eta$ is determined by the following relation
+Here, $\alpha=e^2/(\hbar c)\simeq 1/137$ is the fine structure constant, $n$ is the principle quantum number, $a_B=\hbar^2/(me^2)$ is the Bohr radius, where $m$ is the mass of the electron, and dimensionless parameter
 \begin{equation}
 \eta=\frac{Ze^2}{\hbar v},
 \label{eta}
 \end{equation}
 \newline
-where $Ze$---the charge of the Coulomb center and $v$ is the initial velocity incident electrons. 
-\par Summation of cross sections \eqref{1.2} over all $n$ from 1 to infinity gives an approximate expression for the total RR cross section. Replacing summation by integration and some other simplifications introduce additional insignificant errors, but lead to the simple analytical result
+depends on the charge  $Ze$ of the Coulomb center, and the initial velocity $v$ of incident electrons.
+\textbf{Subsequently, radiative processes were described in the framework of classical physics (so called Kramers Electrodynamics) [Kogan et al.]. This theory allows one to obtain analytical expressions for the transition probabilities using the classical trajectories conception.} 
+\par \textcolor{Red}{Формула Крамерса (\ref{1.2}), полученная в полуклаccическом подходе, разумным образом согласуется с точным квантовомеханическими  расчётами лишь в области $\eta\ge 1$, где расхождения не превышают 20\% (see \cite{kotelnikov2019electron} for details). Nevertheless, the approximate expression
 \begin{equation}
 \label{1.5}
-\sigma^{\rm K}_{RR}(\eta)=\frac{32\pi}{3\sqrt{3}}\,\alpha^3a_B^2\,\eta^2\ln (\eta),
+\sigma^{\rm K}_{RR}(\eta)=\frac{16\pi}{3\sqrt{3}}\,\alpha^3a_B^2\,\eta^2\ln (1+\eta^2),
 \end{equation}
-which is called the Kramers formula and widely used for estimations due to its simple form. In the problem of electron capture by protons for the practically significant region, where $50 <\eta <250$, the Kramers formula slightly exceeds the result of accurate quantum calculations consistent with measurements, but with a correction factor $\sim 0.9$ it properly reproduces the dependence of the total RR cross section on the velocity $v$ of incident electrons (see \cite{kotelnikov2019electron} for details). The semiclassical description of inelastic processes corresponds to
+for the total cross section of radiative recombination, obtaibed from (\ref{1.2}) by summation, replaced by integration, over all $n$ from 1 to infinity, is widely used for estimates due to its simple form. Moreover, for the case of electron capture by protons in a practically significant region, where $50 <\eta <250$, the Kramers formula (\ref{1.5}) reproduces rather accurately the velocity dependence of the result of successive quantum-mechanical calculations consistent with measurements, being multiplyed to a correction factor $\sim 0.9$ (see \cite{kotelnikov2019electron}).} The case of slow electrons,
 \begin{equation}
-\eta\gg 1
+\eta\gg 1,
 \label{low_speed_relation}
 \end{equation}
-%is of particular interest because of the increase in the recombination cross section with decreasing the velocity~$v$.
+is of particular interest because of the increase in the recombination cross section with decreasing the velocity~$v$.
 
-The problem of radiative recombination can also be formulated and solved in the framework of the classical electrodynamics: an electron scattered by a stationary Coulomb center with a charge of $Ze$ loses part of its energy for radiation and, as a result, passes into a state of finite motion, i.e., is captured by the Coulomb center. The total cross section for such process is obtained by Elutin \cite{elutin}: 
+The problem of radiative recombination can also be formulated and solved in the framework of the classical mechanics and classical electrodynamics: an electron scattered by a stationary Coulomb center with a charge of $Ze$ loses part of its energy for radiation and, as a result, passes into a state of finite motion, i.e., is captured by the Coulomb center. The total cross section for such process was given by Elutin \cite{elutin}: 
 \begin{equation}
 \sigma^{\rm Cl}_{RR}(v)=\pi\left(4\pi\right)^{2/5}r^2_0\, Z^{8/5}\left(\frac{c}{v}\right)^{14/5}.
 \label{Yelutin}
 \end{equation}
-Нere $r_0=e^2/(mc^2)$ is the classical electron radius. Note, that the area of applicability for \eqref{Yelutin} differs from \eqref{low_speed_relation} and has the following form: $Z^4(c/v)^2\gg\alpha^{-5}$ \cite{elutin,belotsky2020problems}.
+Нere $r_0=e^2/(mc^2)$ is the classical electron radius.
 
-It is easy to see an apparent discrepancy between the equation \eqref{Yelutin} and the expression \eqref{1.5}, rewritten in the form
+It is easy to see a significant discrepancy between the equation (\ref{Yelutin}) and the equation (\ref{1.5}), rewritten in the form
 \begin{equation}
-\sigma^{\rm K}_{RR}=\frac{32\pi}{3\sqrt{3}}\alpha r^2_0\left(\frac{Zc}{v}\right)^2 \ln\left(\frac{Ze^2}{\hbar v}\right).
+\sigma^{\rm K}_{RR}=\frac{32\pi}{3\sqrt{3}}\alpha r^2_0\left(\frac{Zc}{v}\right)^2 \ln\left(\frac{Ze^2}{\hbar v}\right)
 \label{Kramers_inegral}
 \end{equation}
-\par Firstly, the classical cross section \eqref{Yelutin} has a different dependence on the initial velocity of the electron. %Secondly, prefactors have different orders (mostly due to the absence of the fine structure constant in the classical expression). 
-Secondly, prefactors are strongly different mostly due to the absence of the fine structure constant in the classical expression. 
+with disclosed  \textbf{[[?]]} dependence on $v$. Firstly, the classical cross section \eqref{Yelutin} has a different dependence on the initial velocity of the electron. Secondly, prefactors are strongly different mostly due to the absence of the fine structure constant in the classical expression. 
+
 The classical approach to the radiative recombination was previously used in some cosmological problems, where %a slow
-Coulomb-like interaction of slow massive particles occurs. Important examples are the work on determination of concentration of magnetic monopoles in the Universe \cite{zeldovich1978concentration} and self-interacting dark matter (DM) \cite{Belotsky_2016, Belotsky:2005dk, Belotsky:2015fuc,Belotsky2017positron,Belotsky:2015rhp,Nazarova:2017xaw}.
-Self-interacting DM (SIDM) models become especially popular lately. They may allow solving known problems of standard collisionless cold dark matter scenario of structure formation (like cusp crisis, dwarf galaxies excess predicted, ``too-big-to-fail'' problem) and have physically rich other applications in the searches for DM signals in cosmic rays and underground experiments, explanation of early quasar formation. When Coulomb-like interaction is considered with bound state formation, a quantum approach is usually applied (see, e.g., \cite{Cirelli2017,Petraki2017}) without raising question of its applicability. This also relates to the variety of works considering SIDM models with light mediators. However resulting difference between these two descriptions appears to be of principle \cite{Belotsky_2016}.
-Therefore, it seems important to understand how fully quantum and fully classical approaches to radiation recombination are related to each other.
-\par It is appropriate to recall here that Kramers' work~\cite{kramers1923xciii}, published in 1923, before the creating of the consistent quantum theory, was carried out within the framework of the semiclassical approach based on the most elementary (fundamental) quantum statements. The main idea of this work was the incorporation of the N.~Bohr correspondence principle into classical expressions. Subsequently, many radiative processes were described in this manner (so called Kramers Electrodynamics) \cite{kogan1992kramer}. The original Kramers' article is based on the circumstance that seems escaped from the researches attention. The careful consideration of the classical RR reveals the fundamental reason of inapplicability of the Elutin's  \cite{elutin} approach: the change in the angular momentum of an electron can not be less than~$\hbar$. It will be shown below that within the straightforward classical treatment the RR angular momentum losses are much less than $\hbar$.  However, combining the classical consideration with the fact of quantizing the angular momentum, we propose a semiclassical approach, in a sense alternative to the one used by Kramers. The total RR cross section obtained within this approach is in agreement with the results of quantum mechanical calculations.
+Coulomb-like interaction of \textbf{slow} massive particles occurs. Important examples are the work on determination of concentration of magnetic monopoles in the Universe \cite{zeldovich1978concentration} and self-interacting dark matter \cite{Belotsky_2016, Belotsky:2005dk, Belotsky:2015fuc,Belotsky2017positron,Belotsky:2015rhp,Nazarova:2017xaw}.\textbf{Self-interacting DM (SIDM) models become especially popular lately. They may allow solving known problems of standard collisionless cold dark matter scenario of structure formation (like cusp crisis, dwarf galaxies excess predicted, ``too-big-to-fail'' problem) and have physically rich other applications in the searches for DM signals in cosmic rays and underground experiments, explanation of early quasar formation. When Coulomb-like interaction is considered with bound state formation, a quantum approach is usually applied (see, e.g., \cite{Cirelli2017,Petraki2017}) without raising question of its applicability. This also relates to the variety of works considering SIDM models with light mediators. However resulting difference between these two descriptions appears to be of principle \cite{Belotsky_2016}.} Therefore, it seems important to understand how fully quantum and fully classical approaches to radiation recombination are related to each other.
+
+It is appropriate to recall here that Kramers' work~\cite{kramers1923xciii}, published in 1923, before the creating of a consistent quantum theory, was carried out within the framework of a semiclassical approach based on the most elementary (and fundamental) quantum statements. In addition to \textbf{[[?]]} the classical expressions, the Kramers' work used the N.~Bohr correspondence principle, which relates the radiation of energy at the frequency $\omega$ with the emission of photons with the energy $\hbar\omega$. This article is based on an observation that seems escaped the attention of researchers. If we consider the radiative capture of an electron in the field of a positively charged nucleus, then the fundamental reason why the classical \cite{elutin} approach to  cannot be applied is that the change in the angular momentum of an electron cannot be less than~$\hbar$. However, combining the classical consideration with the fact of quantizing the angular momentum, we propose a semiclassical approach, in a sense alternative to the one used by Kramers. The total cross section for radiative capture obtained within this approach is consistent with the results of quantum mechanical calculations. In addition, we also point out an area where the classical approach seems to be valid.
+
 \section{Classical Approach}
-Let us consider the classical RR problem in a more general way. The particle with the mass equal to $m$, moves towards the Coulomb center with the initial velocity $v$ and the impact parameter $\rho$. The charges of the Coulomb center and the particle equal to $Ze$ and $-ze$ correspondingly. If one neglects the contribution of radiation in the trajectory formation, than the latter can be considered as hyperbolic (see, e.g, \cite{landau1988theoretical}). The trajectory equation in the polar coordinates $(r,\varphi)$ can written in the following form:
+
+Немного обобщая задачу, рассмотрим ситуацию, когда частица массой $m$, падающая с начальной скоростью $v$ и прицельным параметром $\rho$ на кулоновский центр с зарядом $Ze$, обладает зарядом $z(-e)$, где $z$ --- произвольное положительное число. Если пренебречь излучением, то такая частица движется по гиперболической траектории (see, e.g, \cite{landau1988theoretical}). Уравнение траектории в плоскости $(x,y)$ в полярных координатах $(r,\varphi)$ может быть представлено в форме
 \begin{equation}
 r(\varphi)=\frac{p}{1+\varepsilon\cos{\varphi}}\,,
 \label{r_phi}
 \end{equation}
-where $p$ is the orbit parameter and $\varepsilon$ is the eccentricity,
+где параметр орбиты $p$ и эксцентриситет $\varepsilon$,
 \begin{equation}
 p=\frac{L^2}{mzZe^2}\,,\quad 
 \varepsilon=\sqrt{1+\frac{2L^2E}{m(zZe^2)^2}}\,,
 \label{parameters}
 \end{equation}
-depend on initial energy $E$ and angular momentum $L$ of the incident particle. The values of these approximate integrals of motion are determined by $v$ и $\rho$: $E=mv^2/2$, $L=m\rho v$. If the direction of the $z$ axis coincides with the vector $L$, than the 
-azimuth angle changes from $-\varphi_0$ to $\varphi_0$, where
+зависят от энергии $E$ и момента импульса $L$ частицы. Значения этих сохраняющихся величин определяются начальными значениями параметров $v$ и $\rho$: $E=mv^2/2$, $L=m\rho v$. Если вектор $\vec L$ направлен вдоль оси $z$, то азимутальный угол $\varphi$ при движении частицы по гиперболе увеличивается от $-\varphi_0$ до $\varphi_0$, где
 \begin{equation}
 \varphi_0=\arccos\left(-\frac{1}{\varepsilon}\right).
 \label{angle}
 \end{equation}
 
-In the dipole approximation radiation losses are determined by the well known expressions \cite{landau1975classical}:
+Если принять во внимание, что заряженная частица, движущаяся с ускорением, излучает, то её энергию $E$ и момент импульса $L$ следует считать убывающими согласно уравнениям, в которых достаточно учесть доминирующий дипольный вклад в излучение (see, e.g., \cite{landau1975classical}),
 \begin{equation}
 \label{2.6}
-\frac{dE}{dt}=-\frac{2(ze)^2\,{\ddot{\mathbf{r}}}^{\,2}}{3c^3}\,,\quad
-\frac{dL}{dt}=-\frac{2(ze)^2[\dot{\mathbf{r}}\times\, \ddot{\mathbf{r}}\,]_z}{3c^3}\,.
+\frac{dE}{dt}=-\frac{2(ze)^2\,{\ddot{\vec r}}^{\,2}}{3c^3}\,,\quad
+\frac{dL}{dt}=-\frac{2(ze)^2[\dot{\vec r}\times\, \ddot{\vec r}\,]_z}{3c^3}\,.
 \end{equation}
-\par Radiation losses $\Delta E$ and $\Delta L$ can be found using the Newton motion law
+Однако, как правило, за один пролёт частицы по гиперболической траектории величины $E$ и $L$ меняются незначительно, так что влиянием этих изменений на параметры орбиты можно пренебречь. Полные изменения $E$ и $L$ за всё время движения частицы по орбите, как видно из (\ref{2.6}), отрицательны: $\Delta E=-|\Delta E|$, $\Delta L=-|\Delta L|$. Величины этих изменений можно найти, подставив в (\ref{2.6}) ускорение частицы, взятое из 2-го закона Ньютона,
 \begin{equation}
 \label{2.7}
-m\,\ddot{\!\mathbf{r}}=-\frac{zZe^2}{r^3}\,\mathbf{r}.
+m\,\ddot{\!\vec r}=-\frac{zZe^2}{r^3}\,\vec r,
 \end{equation}
-It is convenient to replace time to the the azimuth angle as the integration variable
+и заменив интегрирование по времени на интегрирование по азимутальному углу $\varphi$ с помощью соотношения
 \begin{equation}
 \label{2.4}
 L=mr^2\dot\varphi
 \quad\Rightarrow\quad
 dt=\frac{mr^2}{L}\,d\varphi.
 \end{equation}
-The total energy radiation loss is determined by the following expression
+Так, в частности, полное убывание энергии определяется формулой
 \begin{equation}
 \label{2.9}
 |\Delta E|=\frac{4m(z^3Z^2e^5)^2}{3c^3L^5}\,f(\varphi_0),
 \end{equation}
-where
+где
 \begin{equation}
 \label{2.9.2}
 f(\varphi_0)=\varphi_0\left(1+\frac{1}{2\cos^2\varphi_0}\right)-\frac{3}{2}\tg\varphi_0.
 \end{equation}
-Similar formulas, but for $z=1$ are presented in the original Kramers' paper \cite{kramers1923xciii}.
+Аналогичные формулы, но для случая $z=1$, приведены, в частности, в статье Крамерса --- see Eqs. (20) and (21) in \cite{kramers1923xciii}.
 
-Despite the fact that the decrease in energy $|\Delta E|$ is small relative to the initial energy, it fully determines radiative recombination. Radiation losses is the reason of the transition from infinite to finite area of motion. Therefore, for a given initial velocity $v$ the effect is the stronger, the more significant the value \eqref {2.9}, i.e. the smaller the angular momentum $L$ and, hence, the impact parameter $\rho $. However, there are additional limitations for $L$ ($\rho$) that comes from low values of angular momenta. Equations \eqref{2.6} are valid in all parts of the trajectory, where the dipole approximation is applicable: the initial velocity is much smaller than the speed of light. It is easy to derive the maximum value of speed
+Несмотря на то, что убыль энергии $|\Delta E|$ относительно мала, ею полностью определяется интересующий нас эффект радиационной рекомбинации. Ведь именно благодаря потере энергии классическая частица переходит из состояния инфинитного движения в состояние финитного движения. Поэтому при заданной начальной скорости $v$ эффект тем выше, чем значительнее величина (\ref{2.9}), т.е. чем меньше момент импульса $L$ и, следовательно, прицельный параметр $\rho$. С другой стороны, имеются ограничения снизу на $L$ и $\rho$, возникающие по следующей причине. Уравнения (\ref{2.6}) справедливы, если на всех участках траектории выполняется условие применимости дипольного приближения: скорость частицы много меньше скорости света. Ясно, что это так, если максимальная скорость,
 \begin{equation}
-v_{\rm max}=v\sqrt{\frac{\varepsilon+1}{\varepsilon-1}}\,.
+v_{\rm max}=v\sqrt{\frac{\varepsilon+1}{\varepsilon-1}}\,,
 \label{vmax}
 \end{equation}
-The incident particle's velocity equals to $v_{\rm max}$ when $\varphi=0$. This circumstance and the dipole approximation condition $v_{\rm max}\ll c$ lead to the following limitation for the angular momentum
+до которой разгоняется частица в точке наибольшего сближения с кулоновским центром, при $\varphi=0$, удовлетворяет указанному условию: $v_{\rm max}\ll c$. Нетрудно показать, что это эквивалентно требованию
 \begin{equation}
-L=m\rho v\gg\frac{(1+\varepsilon)zZe^2}{c}\,.
 \label{2.4.4}
+L=m\rho v\gg\frac{(1+\varepsilon)zZe^2}{c}\,,
 \end{equation}
-\par It follows from the relation \eqref{2.4.4} that trajectories with low values of the impact parameter are not taken into account. However, as it will be shown below, it does not affect the recombination process.
-\par For angular momenta values, which simultaneously satisfies \label{2.4.4} and small enough to provide sufficient energy losses $|\Delta E|$ for the transition into the area of finite motion, one obtains: $\varepsilon\to 1$ и $\varphi_0\to \pi$. So, using \eqref{2.9} and \eqref{2.9.2} radiation loss for the energy is equal to
+означающему, что траектории, соответствующие очень малым прицельным параметрам, выпадают из рассмотрения. Но, как следует из дальнейшего, на вывод формулы (\ref{Yelutin}) это не влияет.
+
+В работах \cite{kramers1923xciii,elutin} показано, что при значениях $L$, удовлетворяющих условию (\ref{2.4.4}), но при этом достаточно малых для того, чтобы обеспечить относительно высокие значения $|\Delta E|$, для эксцентриситета (\ref{parameters}) и предельного угла (\ref{angle}) имеем: $\varepsilon\to 1$ и $\varphi_0\to \pi$, так что в соответствии с (\ref{2.9}) и (\ref{2.9.2}) потеря энергии определяется соотношением
 \begin{equation}
 \label{EnergyLossFromLL}
 |\Delta E|=\frac{2\pi m(z^3Z^2e^5)^2}{c^3L^5}\,,
 \end{equation}
 see analogous Eq.(23) in \cite{kramers1923xciii} and Eq.(7) in \cite{elutin}, obtained for $z=1$.
-\par Note, that a particle, which initially has energy $E=mv^2/2>0$ turns into state with negative value of $E$. 
+
+Заметим теперь, что частица, первоначально находившаяся в состоянии инфинитного движения с энергией $E=mv^2/2>0$, переходит в состояние финитного движения с отрицательной энергией, если
 \begin{equation}
 \label{2.11.1}
 |\Delta E|>E.
 \end{equation}
-This condition can be written as follows 
+Это условие переписывается следующим образом: 
 \begin{equation}
 \label{2.11.2}
 (4\pi)^{2/5}(z^3Z^2)^{4/5}r_0^2\left(\frac{c}{v}\right)^{14/5}>\rho^2\,.
 \end{equation}
-The left-hand side of the relation \eqref{2.11.2} can be denoted as $\rho_m^2$. It means that the condition of the transition into the bound state (for the Coulomb potential) can be formulated as: $\rho<\rho_m$. Thus, the classical RR cross section is equal to $\pi\rho_m^2$. Substitution of $z=1$ leads to the expression \eqref{Yelutin}. Note, that the condition \eqref{2.4.4} turns into  $v\ll c\sqrt{z/Z}$, which is valid for moderate values of $z$ and $Z$ (incident particle in this treatment are non-relativistic). Let us now consider particles with such a small impact parameters so the condition \eqref{2.4.4} is not satisfied. There particles achieve relativistic velocities near the Coulomb center. However, radiation losses for such electrons are much greater than $|\Delta E|$ for non-relativistic particles. So, the condition \eqref{2.11.1} is satisfied for these incident particles and they turn into the area of finite motion.
-\par Note that the particle's energy changes from the positive value $E=mv^2/2>0$ to a negative one. It might be confused, because we don't take into account energy loss effect on the trajectory. Nevertheless, it doesn't affect the incident particle motion. Indeed, the main contribution to the radiation process is made by motion on a small segment of the trajectory (see the rotational approximation in \cite{kogan1992kramers}. Thus, despite the 
-deviation of the eccentricity from the unit in both directions, which results in transition of the trajectory from hyperbolic to elongated elliptical, the motion regime near the Coulomb center remains practically unchanged.
+Обозначая левую часть этого неравенства как $\rho_m^2$, получим, что условие перехода классической частицы в связанное состояние в поле кулоновского центра имеет вид $\rho<\rho_m$ и, следовательно, классическое сечение радиационного захвата равно $\pi\rho_m^2$. В случае $z=1$ отсюда получается формула (\ref{Yelutin}) из работы \cite{elutin}. Отметим также, что условие (\ref{2.4.4}) для прицельного параметра $\rho_m$ принимает вид $v\ll c\sqrt{z/Z}$, которое выполняется при разумных значениях $z$ и $Z$, так как падающие частицы в нашем рассмотрении заведомо являются нерелятивистскими. Рассмотрим теперь частицы, которые падают на кулоновский центр при столь малых прицельных параметрах $\rho<\rho_m$, что условие (\ref{2.4.4}) не выполняется. Такие частицы, следовательно, достигают релятивистских скоростей в области наибольшего сближения с кулоновским центром. Но потери энергии релятивистских частиц на излучение, как известно (see, e.g., \cite{landau1975classical}), превышают потери частиц, движущихся с нерелятивистскими скоростями. Поэтому для таких частиц условие (\ref{2.11.1}) заведомо выполняется, так что и они переходят в состояния финитного движения.
+
+Отметим в заключение этого раздела, что при переходе частицы в связанное состояние её энергия меняется от положительного значения $E=mv^2/2>0$ до некоторого отрицательного значения. Это может показаться противоречащим ранее сделанному утверждению о том, что  малое изменение энергии не сказывается на форме орбиты. Но это действительно так, если уточнить, что речь идёт о форме наиболее важного участка орбиты, где в основном происходит излучение. Это участок, где частица близка к кулоновскому центру, и где, следовательно, максимальным является ускорение частицы --- см. (\ref{2.7}). Таким образом, хотя в процессе перехода эксцентриситет в соответствии с (\ref{parameters}) изменятся от значения, слегка выше единицы, до значения, слегка ниже единицы, и частица при этом переходит с гиперболической траектории на сильно вытянутую эллиптическую, характер движения частицы вблизи кулоновского центра практически не меняется.
  
 \section{Semiclassical Approach}
-\par Within the classical approach described above, each particle falling with a given initial velocity $v$ and an impact parameter $\rho$ emits a strictly defined energy $|\Delta E|$, and goes into a state of finite motion if this energy satisfies the condition \eqref{2.11.1}. The situation is different in the semiclassical approach. Here, the particle only with a certain probability $P(\rho)$ passes into a bound state (hereinafter, we assume the velocity $v$ to be fixed, but trace the dependence of the quantities on $\rho$). The corresponding semiclassical cross section is equal to
+
+В классическом подходе, описанном выше, каждая частица, падающая с заданными начальной скоростью $v$ и прицельным параметром $\rho$, излучает строго определённую энергию $|\Delta E|$, и переходит в состояние финитного движения, если эта энергия удовлетворяет условию (\ref{2.11.1}). Иначе обстоит дело в полуклассическом подходе. Здесь частица лишь с определённой вероятностью $P(\rho)$ переходит в связанное состояние (здесь и далее мы считаем скорость $v$ фиксированной, но прослеживаем зависимость величин от $\rho$). Соответственно сечение захвата определяется формулой
 \begin{equation}
 \label{crosssection}
-\sigma=2\pi\int\limits_{0}^{\infty}P(\rho)\,\rho d\rho.
+\sigma=2\pi\int_0^{\infty}P(\rho)\,\rho d\rho.
 \end{equation}
-\par The semiclassical Kramers' approach is based on the spectral expansion of the energy radiation loss
+
+Полуклассический подход Крамерса основан на представлении полной энергии (\ref{EnergyLossFromLL}), которую излучает электрон, падающий на кулоновский центр с прицельным параметром $\rho$, в виде спектрального разложения,
 \begin{equation}
 \label{spectrum}
-|\Delta E(\rho)|=\int\limits_{0}^{\infty}I(\rho,\omega)d\omega.
+|\Delta E|=\int_0^{\infty}I(\rho,\omega)d\omega.
 \end{equation}
-In the framework of the quantum theory, the energy flux emitted by electrons (with given $v$ and $\rho$) in the frequency range from $\omega$ to $\omega+d\omega$ is provided by photons with energy $\hbar\omega$. If we assume that an electron with probability $q (\rho,\omega)d\omega$ emits a photon with energy $\hbar\omega$, then according to the correspondence principle it is necessary to equate the total energy $NI(\rho,\omega)d\omega$, emitted by $N$ electrons in the frequency range from $\omega$ to $\omega+d\omega $ in the framework of the classical theory, and the total energy $\hbar\omega Nq(\rho,\omega)d\omega\,$ emitted by the same $N$ electrons in the same frequency range in the framework of the semiclassical approach. These manipulations leads to the following relation
+С квантовой точки зрения поток энергии, излучаемый электронами (с заданными $v$ и $\rho$) в частотный диапазон от $\omega$ до $\omega+d\omega$, обеспечивается фотонами с энергией $\hbar\omega$. Если принять, что электрон с вероятностью $q(\rho,\omega)d\omega$ излучает фотон с энергией $\hbar\omega$, то согласно принципу соответствия нужно приравнять полную энергию $NI(\rho,\omega)d\omega$, излучаемую $N$ электронами в частотный диапазон от $\omega$ до $\omega+d\omega$ в рамках классической теории, полной энергии $Nq(\rho,\omega) d\omega\, \hbar\omega$, излучаемой теми же $N$ электронами в тот же частотный диапазон в рамках полуклассического подхода. \textbf{Подобный подход был использован в статьях \cite{kogan_eldin}.} Это даёт соотношение:
 \begin{equation}
 \label{difprobability}
 q(\rho,\omega)=\frac{I(\rho,\omega)}{\hbar\omega}\,.
 \end{equation}
-\par The integral, calculated over all frequencies within the classical approach represents the full probability of the photon emission \footnote{Note, that the expression \eqref{fprobability} is absent in the Kramers' original work \cite{kramers1923xciii}. The quantity in the right-hand side of the equation \eqref{fprobability} is much less than unit, which means that a big number of electrons do not emit. It seems, that such a conclusion looks too extraordinary for the paper in 1923. See the footnote 5 below.}
+\textcolor{Red}{Заметим здесь же, что интеграл по всем частотам
 \begin{equation}
-\label{fprobability}
-P^K(\rho)=\int\limits_{\Delta_n\omega}q(\rho,\omega)d\omega=\dfrac{8}{\sqrt{3}}\alpha^3\bigg(\dfrac{Z\hbar}{L}\bigg)^2.
+\label{totprobability}
+P^K(\rho)=\int_0^{\infty}q(\rho,\omega)d\omega=
+\frac{8}{\sqrt{3}}\,\alpha^3\left(\frac{Z\hbar}{L}\right)^2,
 \end{equation}
-\par Matching every bound state $n$ with the finite frequency interval $\Delta_n\omega$ allows one to obtain the differential transition probability
+вычисленный в рамках полуклассического подхода Крамерса, с некоторой оговоркой, сформулированной в конце раздела~3, представляет собой полную вероятность того, что электрон, падающий с прицельным параметром $\rho$, испускает фотон}\footnote{Интересно, что результат (\ref{totprobability}) отсутствует в работе \cite{kramers1923xciii}. Поскольку в правой части стоит величина, существенно меньшая единицы, то, по-видимому, вывод о том, что очень значительная часть электронов не излучает при торможении, выглядел слишком радикальным в 1923 году. См. также примечание~\ref{4}.}.
+
+Если далее, следуя Крамерсу, сопоставить каждому связанному состоянию с энергией $E_n=-Z^2e^2/(2a_Bn^2)$ конечный интервал частот $\Delta_n\omega$, то вероятность перехода электрона в состояние с главным квантовым числом $n$ окажется равной
 \begin{equation}
-P_n^{K}(\rho)=\int\limits_{\Delta_n\omega}q(\rho,\omega)d\pmega.
 \label{nprobability}
+P^K_n(\rho)=\int_{\Delta_n\omega}q(\rho,\omega)d\omega.
 \end{equation}
-\par Evaluating the integral \eqref{crosssection} with these probabilities leads to the formula \eqref {1.2}.%However, within such a procedure, there is no idea whether there is an area of applicability of the full classical expression \eqref{Yelutin} for the total RR cross section.
-The Kramers' approach let one 
-\par That is why we return to the classical approach and note that the loss of energy \eqref{EnergyLossFromLL}, which is necessary for binding the system, is inevitably accompanied by a loss of angular momentum. Thus, we consider this loss, which is determined according \eqref{2.6} and \eqref{2.7} by the following relation:
+Вычисление интеграла (\ref{crosssection}) с этими вероятностями даёт формулу (\ref{1.2}).  \textcolor{Red}{В рамках этого же подхода Крамерс воспроизвёл жёсткую часть непрерывного спектра тормозного излучения электронов, которая соответствует случаю, когда энергия фотона $\hbar\omega\le \hbar\omega_0$ примыкает к граничной энергии $\hbar\omega_0$, равной энергии $E=mv^2/2$ падающего электрона. В этом случае <<эффективное излучение>> (см. \cite{landau1975classical}), представляющее собой по сути непрерывный спектр тормозного излучения (см. \cite{KoganPlanckConstant}, in particular, Eq.(12) from this article), оказывается равным}\footnote{В работе Крамерса \cite{kramers1923xciii} величина, отличающаяся от эффективного излучения постоянными множителями, задана формулой (71).}
+\textcolor{Red}{
+\begin{equation}
+\label{effrad}
+\kappa_K(\omega)d\omega=2\pi \int_0^{\infty} q(\rho,\omega)d\omega\, \hbar\omega\, \rho d\rho=
+\frac{16\pi Z^2e^6}{3\sqrt{3}\,c^3m^2v^2}\,d\omega.
+\end{equation}
+Поскольку величина в правой части при $d\omega$, не зависит от $\omega$, то обсуждаемый спектр в области $\omega\le\omega_0$ является <<плоским>> или, иначе, представляет собой <<ступеньку>>, которая обрывается при $\omega=\omega_0$.} 
+
+\textcolor{Red}{Позже аналогичные подходы (the so called Kramers electrodynamics), успешно использовались для решения широкого круга задач --- см., например, \cite{KoganPlanckConstant,kogan1992kramers}.} Однако в  рамках таких подходов мы не находим ответ на вопрос, существует ли область применимости для классического выражения (\ref{Yelutin}) для полного сечения радиационного захвата.
+
+That is why we return to the classical approach and note that the loss of energy (\ref{EnergyLossFromLL}), which is necessary for binding the system, is inevitably accompanied by a loss of angular momentum. Thus we consider this loss, which is determined according (\ref{2.6}) and (\ref{2.7}) by the following relation:
 \begin{equation}
 \frac{dL}{dt}=-\dfrac{2z^3Ze^4}{3m^2c^3r^3}L.
 \label{brem_an_mom}
 \end{equation}
-Using \eqref{2.4} to replace the time $t$ by the azimuth angle~$\varphi$ as well as expressions \eqref{r_phi}, \eqref{parameters} and the result $\varphi_0\simeq\pi$, for the loss of angular momentum for the entire motion of the incident particle, one obtains
+Using (\ref{2.4}) to replace the time $t$ by the azimuthal angle~$\varphi$ as well as expressions (\ref{r_phi}), (\ref{parameters}) and the result $\varphi_0\simeq\pi$, for the loss of angular momentum for the entire flight of the particle, we obtain
 \begin{equation}
 |\Delta L|=\frac{4\pi (z^2Ze^3)^2}{3L^2c^3}
 \label{ddl}
 \end{equation}
-with additional assumption $|\Delta L|\ll L$, which validity is ensured by the relation \eqref{2.4.4}.
+with additional assumption $|\Delta L|\ll L$, which validity is ensured by the relation (\ref{2.4.4}).
 
 Then we take the fundamental fact of discreteness of angular momentum
 \begin{equation}
 L=l\hbar,
 \label{q_ang_mom}
 \end{equation}
-where $l$ is an integer number\footnote{Obviously, the spin plays no role in this approach}. It means that \eqref{ddl} can be rewritten in the form
+where $l$ is an integer number\footnote{Obviously, the spin plays no role in this approach. \textbf{[[?]]} \textcolor{Red}{Я думаю, что это примечание можно опустить, в этом описании спин выглядит чужеродным.}}. It means that (\ref{ddl}) can be rewritten in the form
 \begin{equation}
 |\Delta L|=\frac{4\pi (z^2Z)^2}{3l^2}\left(\frac{e^2}{\hbar c}\right)^3\hbar.
 \label{ddl2}
 \end{equation}
-It is easy to see from \eqref{ddl2} that $\Delta L \ll \hbar$, if $z$ and $Z$ are not too high. This is the reason why the completely classical approach is not applicable to the problem of radiative capture description in such an elementary system as an electron and a positively charged nucleus. However, it is possible to construct the semiclassical approach to provide a solution to this problem. For the sake of simplicity, we assume $z=1$.
-Let us make an assumption that an electron can emit only with the probability equal to $P(\rho)$. Moreover, the value of emitted angular momentum equals to $\hbar$. Then, according to the correspondence principle, one should equate angular momentum $N|\Delta L|$, emitted by $N$ electrons within classical treatment, and the same value derived using the semiclassical approach $NP(\rho)\,\hbar$  
+It is easy to see from \eqref{ddl2} that $\Delta L \ll \hbar$, if $z$ and $Z$ are not too high. This is the reason why the completely classical approach is not applicable to the problem of describing radiative capture in such an elementary system as an electron and a positively charged nucleus. \textbf{In this case a photon emission is forbidden by the selection rules for the orbital quantum numbers. Possibility of the photon emission in the framework of classical electrodynamics is also discussed in [kogan]. }
+
+С этого места, однако, мы можем развить полуклассический подход к указанной задаче (\textbf{всюду} далее \textcolor{Red}{в этом разделе, кроме последнего абзаца,} полагаем $z=1$). Предположим, что электрон излучает лишь с вероятностью $P(\rho)$, но величина сбрасываемого им углового момента равна $\hbar$. Тогда, пользуясь принципом соответствия, приравняем угловой момент $N|\Delta L|$, излучаемый $N$ электронами согласно классической теории, угловому моменту $NP(\rho)\,\hbar$, излучаемому теми же $N$ электронами в рамках полуклассического подхода. Вероятность оказывается равной: 
 \begin{equation}
 P(\rho)=\frac{|\Delta L|}{\hbar}=
-\frac{4\pi(Ze^3)^2}{3\hbar m^2\rho^2v^2c^3}\,.
+\frac{4\pi}{3}\,\alpha^3 \left(\frac{Z\hbar}{L}\right)^2.
 \label{probability2}
 \end{equation}
-One can repeat the same manipulations with the energy radiations losses. If the semiclassical emitted energy equals $NP(\rho)\Delta E^{\prime}|$, then one obtains the following relation
+Приравняем, далее, полную энергию $N|\Delta E|$, изучаемую $N$ электронами согласно классической теории, энергии $NP(\rho)|\Delta E^{\prime}|$, излучаемую теми же $N$ электронами в рамках полуклассического подхода.% \textbf{[[Это правильно?]]}. 
+Мы видим, что во втором случае электрон излучает энергию
 \begin{equation}
-|\Delta E^{\prime}|=\frac{|\Delta E|}{P(\rho)}=
+|\Delta E^{\prime}|
+\textcolor{Red}{\equiv\hbar\omega(\rho)}=
+\frac{|\Delta E|}{P(\rho)}=
 \frac{3\hbar (Ze^2)^2}{2m^2\rho^3v^3}\,.
 \label{energy2}
 \end{equation}
-\par Substitution of \eqref{energy2} into the left-hand side of \eqref{2.11.1} instead of $|\Delta E|$, leads to the $\rho<\rho_{\rm max}$ instead of \eqref{2.11.2}, where
+\textcolor{Red}{Здесь принято также, что вся эта энергия передаётся одному фотону с частотой $\omega(\rho)$}\footnote{\textcolor{Red}{Получающаяся здесь частота $\omega$ с точностью до небольшого численного множителя совпадает с максимальной угловой частотой электрона, движущегося по параболической орбите, в точке максимального сближения с кулоновским центром. В работе \cite{KoganPlanckConstant} подчёркнуто, что эта частота является характерной частотой тормозного излучения, так что из соотношения $\hbar\omega \gg |\Delta E|$ ясно следует <<сильная флуктуативность>> акта тормозного излучения. Это, фактически, подтверждает, что отношение $|\Delta E|$ к $\hbar\omega$ следует понимать как малую вероятность того, что электрон излучает фотон, в полном соответствии с (\ref{probability2}) и (\ref{energy2}}).}.
+
+\textcolor{Red}{В этом подходе, следовательно, возникает очень простое описание тормозного излучения и радиационной рекомбинации. Рекомбинация происходит, когда электрон испускает фотон с энергией, лежащей в интервале
 \begin{equation}
-\rho_{\rm max}=\frac{1}{m}\left(\frac{3\hbar(Ze^2)^2}{v^5}\right)^{1/3}.
-\label{rhomax}
+\hbar\omega_0=\frac{mv^2}{2}<\hbar\omega<\hbar\omega_{\rm max}=\frac{mv^2}{2}+\frac{Z^2e^2}{2a_B}\,.
+\label{int1}
 \end{equation}
-\par The value $\rho_{max}$ is the maximum impact parameter, which an electron is captured into one of the bound states in the semiclassical approach.
-\par Thus, the total RR cross section is determined by the integral \eqref{crosssection} with the probability $P(\rho)$ \eqref{probability2} and limits from some minimal impact parameter value $\rho_{min}$ and \eqref{rhomax}. If one consider
+Этому интервалу частот соответствует следующий интервал прицельных параметров:
 \begin{equation}
-\rho_{\rm min}=\frac{\hbar}{mv}\,,
-\label{rhomin}
+\rho_0=\frac{\sqrt{3}\,\hbar}{mv}\,\eta^{2/3}>\rho>\rho_{\rm min}=\frac{\sqrt{3}\,\hbar}{mv}\left(\frac{\eta^2}{1+\eta^2}\right)^{1/3}.
+\label{int2}
 \end{equation}
-taking $\hbar$ as a minimum emitted angular momentum, we obtain the expression for integral from \eqref{crosssection}:
+В то же время жёсткая часть спектра тормозного излучения с частотами $\omega\le\omega_0$, прилегающая к $\omega_0$, формируется электронами, падающими с прицельными параметрами $\rho\ge\rho_0$. При этом фотоны с частотами в малом интервале $d\omega$ вблизи $\omega$ испускаются электронами, падающими с прицельными параметрами в малом интервале $d\rho=-(d\rho/d\omega)d\omega$ вблизи $\rho(\omega)$. Поэтому эффективное излучение в области непрерывного спектра тормозного излучения $\omega\le\omega_0$ в данном случае определяется формулой
 \begin{equation}
-\int\limits_{\rho_{\rm min}}^{\rho_{\rm max}}\frac{d\rho^2}{\rho^2}=
-2\ln\left(\frac{\rho_{\rm max}}{\rho_{\rm min}}\right)=
-2\left(\frac{1}{2}\ln 3+\frac{2}{3}\ln\eta\right).
+\kappa(\omega)d\omega=2\pi P(\rho)\,\hbar\omega\, \rho d\rho=
+\frac{8\pi^2(Ze^3)^2}{9c^3m^2v^2}\,d\omega.
+\label{effrad2}
+\end{equation}
+Таким образом, здесь так же, как в методе Крамерса, получается <<плоский>> спектр.}
+
+\textcolor{Red}{Подставляя, далее, энергию (\ref{energy2}) в левую часть условия (\ref{2.11.1}) вместо $|\Delta E|$, получим левое из неравенств (\ref{int1}) и, соответственно, левое из неравенств (\ref{int2}), $\rho_0\ge \rho$, вместо неравенства (\ref{2.11.2}). Таким образом, в данном подходе полное сечение радиационного захвата электрона кулоновским центром определяется интегралом (\ref{crosssection}) с вероятностью $P(\rho)$ (\ref{probability2}), который вычисляется в пределах, определяемых формулой (\ref{int2}). Соответственно для интеграла, входящего в (\ref{crosssection}), получим:
+\begin{equation}
+\int_{\rho_{\rm min}}^{\rho_0}\frac{d\rho}{\rho}=
+\ln\left(\frac{\rho_0}{\rho_{\rm min}}\right)=
+\frac{1}{3}\ln (1+\eta^2).
 \label{integral}
 \end{equation}
-\par Taking into account \eqref{low_speed_relation}, one can neglect the first term in \eqref{integral}. As a result, in this semiclassical approach, we obtain the following expression for the total RR cross section
+В результате в данном полуклассическом подходе полное сечение радиационной рекомбинации принимает вид:
 \begin{equation}
-\sigma_r=\frac{16\pi^2}{9}\alpha^3a_0^2\, \eta^2\ln (\eta).
+\sigma_{RR}=\frac{8\pi^2}{9}\alpha^3a_0^2\, \eta^2\ln (1+\eta^2).
 \label{final_sigma}
 \end{equation}
-The only difference of this expression with the Kramers' formula \eqref{1.5} is slightly different prefactor. Notice that the ratio of this prefactor to that from \eqref{1.5} is approximately~$0.9$, that is why the obtained result is closer to the accurate quantum result, as it was outlined in the Introduction.
+}
 
-\par To conclude this section we would like to underline the important circumstance. The incident electron can emit angular momentum greater than $\hbar$ for trajectories with small impact parameter. According to \eqref{ddl2} it might happen when
+The only difference of this expression with the Kramers' formula (\ref{1.5}) is slightly different prefactor. Notice that the ratio of this prefactor to that from (\ref{1.5}) \textcolor{Red}{is
+\begin{equation}
+\frac{8\pi^2/9}{16\pi/(3\sqrt{3})}=\frac{\pi\sqrt{3}}{6}\simeq 0.9.
+\label{ratio}
+\end{equation}
+}That is why the obtained result is closer to the accurate quantum result, as it was pointed out in the Introduction. \textcolor{Red}{Note that similar expressions (\ref{totprobability}) and (\ref{probability2}) as well as (\ref{effrad}) and (\ref{effrad2}), obtained within Kramers and our semiclassical approaches, differ by the same ratio. Неточность, допущенная нами выводе формулы (\ref{totprobability}), заключалась в том, что интеграл по частотам следовало бы вычислять лишь до частоты $\omega_{\rm max}$ (\ref{int1})}\footnote{\label{4} \textcolor{Red}{Неявно предполагая, что весь интеграл в по частотам в формуле (\ref{totprobability}) равен единице, Крамерс \cite{kramers1923xciii} связывает только малую часть  этого интеграла от $\omega_{\rm max}$ до бесконечности с малой вероятностью того, что электрон при рассеянии не излучает.}}\textcolor{Red}{. Но поскольку $I(\rho,\omega)$ быстро убывает с увеличением $\omega$ при значениях $\rho$, существенных в данной задаче, то эта неточность незначительна.} 
+
+Завершая этот раздел, заметим, что в задаче рассеяния частицы с зарядом $z(-e)$ в поле кулоновского центра с зарядом $Ze$ излучение углового момента, по крайней мере для орбит, соответствующих малым прицельным параметрам, может оказаться выше, чем $\hbar$. В самом деле, в соответствии с (\ref{ddl2}) это произойдёт, если выполняется условие
 \begin{equation}
 z^2Z>l\, \sqrt{\frac{3}{4\pi}} \left(\frac{\hbar c}{e^2}\right)^{3/2}\simeq 10^3 l.
 \label{final}
 \end{equation}
-In this case, apparently, classical treatment provides the description of a contribution to RR cross section. In problems of dark matter, the condition written out will be softer if the analog of the fine structure constant turns out to be not so small as the number 1/137. For example, for magnetic monopoles the charge $q_M\sim c\hbar/e$.
+В этом случае, по-видимому, часть полного сечения радиационной рекомбинации будет обусловлена классической физикой. В задачах о темной материи выписанное условие будет более мягким, если аналог постоянной тонкой структуры окажется не столь малым, как число 1/137. \textbf{В случае магнитных монополей заряд равен ...}
 
 \section{Conclusion}
-The classical description of the radiative recombination within the dipole approximation leads to the apparent discrepancy with the known quantum result. The main reason of it is that the electron angular momentum loss is much less than~$\hbar$. However, for the dipole transitions the orbital quantum number has to change: $\Delta l=\pm 1$. This quantum condition turns out to forbid photon emission by an electron in the Coulomb field within the straightforward classical consideration.
-In order to overcome this problem the alternative semiclassical calculation is presented. Such approach leads to the correct expression for the recombination cross section. The issue of the applicability of the classical or quantum approaches had been earlier found to be especially relevant in cosmological problems related to the self-interacting dark matter.
+It is well known that the straightforward consideration of microscopic processes in terms of the classical electrodynamics might lead to the incorrect result. The classical description of the radiative recombination within dipole approximation leads to the discrepancy with known quantum result. The main reason of it is that the \textbf{electron} angular momentum loss is much less than~$\hbar$. However, for the dipole transitions the orbital quantum number has to change \textbf{on the value $\pm\hbar,\, \pm 2 \hbar\, ...$} \textbf{[[Would it be worth to comment $\Delta L=0$?]]}. \textbf{This quantum condition turns out to forbid photon emission by an electron in the Coulomb field within the straightforward classical consideration.}
+%This leads to impossibility of a photon emission by an electron in the Coulomb field within the straightforward classical consideration.
+
+In order to overcome this problem the alternative semiclassical calculation is presented. Such approach leads to the correct expression for the recombination cross section. A possible area of parameters where classical approach to radiative recombination may be valid is outlined \textbf{[[? one needs to remind]]}. \textbf{The issue of the applicability of the classical or quantum approaches had been earlier found to be especially relevant in cosmological problems related to the self-interacting dark matter.}
+
 \section{Acknowledgement}
 
-We would like to thank S.G.Rubin for interest to this work with useful discussion. The work of K.M.B. (on connection of this task with dark matter problem) was supported by Ministry of Science and Higher Education of the Russian Federation by project No 0723-2020-0040 “Fundamental problems of cosmic rays and dark matter”. \textbf{The work of E.A.E. (on calculation of applicability conditions ...) was supported by ... Basis }
+We would like to thank S.G.Rubin for interest to this work with useful discussion. The work of K.M.B. (on connection of this task with dark matter problem) was supported by Ministry of Science and Higher Education of the Russian Federation by project No 0723-2020-0040 “Fundamental problems of cosmic rays and dark matter”. The work of E.A.E. (on calculation of applicability conditions ...) was supported by ... Basis 
 
 % \begin{thebibliography}{99}
 
@@ -341,6 +378,10 @@ We would like to thank S.G.Rubin for interest to this work with useful discussio
 % \newblock 43(12):1253--1259, dec 2000.
 
 % \end{thebibliography}
+
 \bibliographystyle{unsrt}
 \bibliography{bibliography/bibl}
+
+
+
 \end{document}
