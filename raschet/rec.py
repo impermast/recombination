@@ -169,10 +169,21 @@ def calc(alpha,ma,mb):
     return [T,rk,r3b,rcl,rlim]
     
 
-def contourplot(df):
+def contourplot(df,lang,x0=10**8,y0=8):
+    global PICPATH
+    graph_name = "contourplot_lim.png"
+    if lang == "rus":
+        lab1 = 'Значения относительной плотности'
+        lab2 = r'Значения относительной плотности: $-\log{\frac{r}{r_0}}$'
+        title1 = 'Относительная плотность прорекомбинировавших частиц для различных параметров модели'
+        lab3 = "На другом графике"
+    elif lang == "eng":
+        lab1 = "Reletive densety"
+        lab2 = r'Limiting relative density: $-\log{\frac{r}{r_0}}$'
+        lab3 = "on another plot"
+        title1 = "Reletive density of recombined particles for different model parameters"
     # Создаем фигуру и оси графика
     fig, ax = plt.subplots(figsize=(12, 8))
-    fig.canvas.set_window_title('limplot')
     # Используем массивы NumPy для данных
     x = np.array(df.columns, dtype=float)
     y = np.array(df.index, dtype=float)
@@ -183,7 +194,7 @@ def contourplot(df):
     cbar = fig.colorbar(cf, ax=ax)
     ax.set_xscale('log')
 
-    cbar.set_label(r'Limiting relative density: $-\log{\frac{r}{r_0}}$',fontsize = 20)
+    cbar.set_label(lab2,fontsize = 20)
     # cbar.set_label(r'Значения относительной плотности: $-\log{\frac{r}{r_0}}$',fontsize = 20)
     
     ax.set_xlabel(r'$m_a$, eV', fontsize=20)
@@ -208,17 +219,17 @@ def contourplot(df):
     ax.tick_params(labelsize=14)
     ax.title.set_size(16)
     cbar.ax.tick_params(labelsize=14)
-    # Добавляем точку на график
-    x0 = 10**8
-    y0 = 8
     ax.scatter(x0, y0, s=100, color='black', marker='*')
     # Добавляем подпись для точки
-    ax.annotate("on another plot", xy=(x0, y0), xytext=(x0+0.5, y0+0.2), fontsize=12)
+    ax.annotate(lab3, xy=(x0, y0), xytext=(x0+0.5, y0+0.2), fontsize=12)
     # Устанавливаем отступы между подписями и графиком
     plt.tight_layout()
+    plt.savefig(PICPATH+graph_name)
     plt.show()
 
 def heatplot(df,lang):
+    global PICPATH
+    graph_name = "heatplot_lim.png"
     if lang == "rus":
         lab1 = 'Значения относительной плотности'
         title1 = 'Относительная плотность прорекомбинировавших частиц для различных параметров модели'
@@ -238,10 +249,12 @@ def heatplot(df,lang):
     ax.set_yticklabels(ylabels)
     ax.set_xticklabels(xlabels)
     plt.xticks(rotation=0)
+    plt.savefig(PICPATH+graph_name)
     plt.show(block=False)
 
 def lim_graph(T,rk,r3,rcl,rlim,lang):
-
+    global PICPATH
+    graph_name = "lim_graph.png"
     if lang == "eng":
         lab = "Applicability range"
         lab1 = "Radiative recombinaton"
@@ -255,7 +268,6 @@ def lim_graph(T,rk,r3,rcl,rlim,lang):
 
     # graphplotter used to plot r(T) graphs
     fig, ax = plt.subplots(1,1, figsize = (8,6))
-    fig.canvas.set_window_title('lim3body')
 
     ax.plot(T,r3,'b', 
             # label ="Трехчастичная рекомбинация")
@@ -287,9 +299,12 @@ def lim_graph(T,rk,r3,rcl,rlim,lang):
     
     ax.fill_between(T, rlim, ax.get_ylim()[1], alpha=0.5, color='#B1FA9A', hatch='//',edgecolor='green')
     plt.box(False)
+    plt.savefig(PICPATH+graph_name)
     plt.show(block=False)
 
 def classkram3body_graph(T,rk,r3,rcl,rlim,lang):
+    global PICPATH
+    graph_name = "classkramthreebody.png"
     if lang == "eng":
         lab1 = "Radiative recombinaton"
         lab2 = "Three-body recombinaton"
@@ -300,7 +315,6 @@ def classkram3body_graph(T,rk,r3,rcl,rlim,lang):
         lab3 = "Классическая рекомбинация"
     # graphplotter used to plot r(T) graphs
     fig, ax = plt.subplots(1,1, figsize = (8,6))
-    fig.canvas.set_window_title('claskram3body')
     ax.plot(T,r3,'b',
             label = lab2)
             # label ="Трехчастичная рекомбинация")
@@ -329,10 +343,13 @@ def classkram3body_graph(T,rk,r3,rcl,rlim,lang):
     plt.semilogx()
     plt.semilogy()
     plt.box(False)
+    plt.savefig(PICPATH+graph_name)
     plt.show(block=False)
 
 
 def kramers_graph(T,rk,r3,rcl,rlim,lang):
+    global PICPATH
+    graph_name = "kramers_graph.png"
     if lang == "eng":
         lab1 = "Radiative recombinaton"
     elif lang=="rus":
@@ -340,7 +357,6 @@ def kramers_graph(T,rk,r3,rcl,rlim,lang):
 
     # graphplotter used to plot r(T) graphs
     fig, ax = plt.subplots(1,1, figsize = (8,6))
-    fig.canvas.set_window_title('kramers')
 
     ax.plot(T,rk,'r', 
             label = lab1)
@@ -354,18 +370,20 @@ def kramers_graph(T,rk,r3,rcl,rlim,lang):
     ax.invert_xaxis()
     plt.semilogx()
     plt.box(False)
+    plt.savefig(PICPATH+graph_name)
     plt.show(block=False)
 
 
 #LOGIC -- 1 download data, else generate new
 logic = 1
 lang = "eng"
+PICPATH = "/home/kds/sci/threebody/pics/"
 err=10**(-3)
 points = 100
 mb_range = 10
 
 def main():
-    global ma,alpha,mb
+    global ma,alpha,mb,lang
     ali = 1/((ma/mb)**(3/2)*alpha**3*(2*np.pi**2*g_s(T0)/45))
     print(ali)
     alp_range = np.linspace(0,10,points)
@@ -382,17 +400,18 @@ def main():
         pass
         
     [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
-    kramers_graph(T,rk,r3,rcl,rlim)
-    classkram3body_graph(T,rk,r3,rcl,rlim)
+    kramers_graph(T,rk,r3,rcl,rlim,lang)
+    classkram3body_graph(T,rk,r3,rcl,rlim,lang)
     df = pd.read_csv('data.csv', index_col=0)
     # heatplot(df)
     # print(df)
-    contourplot(df,lang)
     alpha = 8
     ma = 10**8
+    
+    contourplot(df,lang,ma,alpha)
     mb =ma*mb_range
     [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
-    lim_graph(T,rk,r3,rcl,rlim)
+    lim_graph(T,rk,r3,rcl,rlim,lang)
 
     plt.show()
     # [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
