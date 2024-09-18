@@ -179,7 +179,7 @@ def contourplot(df):
     z = df.values
     colormap = plt.cm.get_cmap("coolwarm").copy()
     # Создаем контурный график с логарифмическим масштабом по обеим осям
-    cf = ax.contourf(x, y, z, levels=25, cmap=colormap, alpha=0.9)
+    cf = ax.contourf(x, y, z, levels=50, cmap=colormap, alpha=0.9)
     cbar = fig.colorbar(cf, ax=ax)
     ax.set_xscale('log')
 
@@ -218,13 +218,19 @@ def contourplot(df):
     plt.tight_layout()
     plt.show()
 
-def heatplot(df):
+def heatplot(df,lang):
+    if lang == "rus":
+        lab1 = 'Значения относительной плотности'
+        title1 = 'Относительная плотность прорекомбинировавших частиц для различных параметров модели'
+    elif lang == "eng":
+        lab1 = "Reletive densety"
+        title1 = "Reletive density of recombined particles for different model parameters"
     # heatplot of maximal denity for different model parameters
     sns.set_theme(style="dark")
     sns.set_style("ticks")
     fig, ax = plt.subplots(figsize=(9, 6))
-    sns.heatmap(df, annot=True, linewidths=.5, ax=ax, cmap='coolwarm', cbar_kws={'label': 'Значения относительной плотности'})
-    ax.set(xlabel=r'$m_a$, eV', ylabel=r'$\alpha_y$', title='Относительная плотность прорекомбинировавших частиц для различных параметров модели')
+    sns.heatmap(df, annot=True, linewidths=.5, ax=ax, cmap='coolwarm', cbar_kws={'label': lab1})
+    ax.set(xlabel=r'$m_a$, eV', ylabel=r'$\alpha_y$', title=title1)
     ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: f'$10^{{{(x-0.5):.0f}}}$'))
     ylabels = ["{:0.1f}".format(float(item.get_text())) 
                  for item in ax.get_yticklabels()] 
@@ -234,16 +240,28 @@ def heatplot(df):
     plt.xticks(rotation=0)
     plt.show(block=False)
 
-def lim_graph(T,rk,r3,rcl,rlim):
+def lim_graph(T,rk,r3,rcl,rlim,lang):
+
+    if lang == "eng":
+        lab = "Applicability range"
+        lab1 = "Radiative recombinaton"
+        lab2 = "Three-body recombinaton"
+        lab3 = "Classical recombination"
+    elif lang=="rus":
+        lab = "Предел применимости"
+        lab1 = "Радиационная рекомбинация"
+        lab2 = "Трехчастичная рекомбинация"
+        lab3 = "Классическая рекомбинация"
+
     # graphplotter used to plot r(T) graphs
     fig, ax = plt.subplots(1,1, figsize = (8,6))
     fig.canvas.set_window_title('lim3body')
 
     ax.plot(T,r3,'b', 
             # label ="Трехчастичная рекомбинация")
-            label = "Three-body recombinaton")
+            label = lab2)
     ax.plot(T,rlim, "-g",
-            label ="Applicability range")
+            label =lab)
             # label ="Предел применимости")
     ax.set_xlabel('T, eV', fontsize=16)
     ax.set_ylabel(r'$r/r_0$', fontsize=16)
@@ -271,18 +289,26 @@ def lim_graph(T,rk,r3,rcl,rlim):
     plt.box(False)
     plt.show(block=False)
 
-def classkram3body_graph(T,rk,r3,rcl,rlim):
+def classkram3body_graph(T,rk,r3,rcl,rlim,lang):
+    if lang == "eng":
+        lab1 = "Radiative recombinaton"
+        lab2 = "Three-body recombinaton"
+        lab3 = "Classical recombination"
+    elif lang=="rus":
+        lab1 = "Радиационная рекомбинация"
+        lab2 = "Трехчастичная рекомбинация"
+        lab3 = "Классическая рекомбинация"
     # graphplotter used to plot r(T) graphs
     fig, ax = plt.subplots(1,1, figsize = (8,6))
     fig.canvas.set_window_title('claskram3body')
     ax.plot(T,r3,'b',
-            label ="Three-body recombinaton")
+            label = lab2)
             # label ="Трехчастичная рекомбинация")
     ax.plot(T,rk,'r', 
             # label ="Радиационная рекомбинация")
-            label = "Radiative recombinaton")
+            label = lab1)
     ax.plot(T,rcl,'g', 
-            label ="Classical recombination")
+            label = lab3)
             # label ="Классическая рекомбинация")
     ax.set_xlabel('T, eV', fontsize=16)
     ax.set_ylabel(r'$r/r_0$', fontsize=16)
@@ -304,14 +330,20 @@ def classkram3body_graph(T,rk,r3,rcl,rlim):
     plt.semilogy()
     plt.box(False)
     plt.show(block=False)
-def kramers_graph(T,rk,r3,rcl,rlim):
+
+
+def kramers_graph(T,rk,r3,rcl,rlim,lang):
+    if lang == "eng":
+        lab1 = "Radiative recombinaton"
+    elif lang=="rus":
+        lab1 = "Радиационная рекомбинация"
+
     # graphplotter used to plot r(T) graphs
     fig, ax = plt.subplots(1,1, figsize = (8,6))
     fig.canvas.set_window_title('kramers')
 
     ax.plot(T,rk,'r', 
-            # label ="Радиационная рекомбинация")
-            label = "Radiative recombinaton")
+            label = lab1)
     ax.plot(T,[1]*len(T),'--b')
     ax.set_xlabel('T, eV', fontsize=16)
     ax.set_ylabel(r'$r/r_0$', fontsize=16)
@@ -327,6 +359,7 @@ def kramers_graph(T,rk,r3,rcl,rlim):
 
 #LOGIC -- 1 download data, else generate new
 logic = 1
+lang = "eng"
 err=10**(-3)
 points = 100
 mb_range = 10
@@ -354,7 +387,7 @@ def main():
     df = pd.read_csv('data.csv', index_col=0)
     # heatplot(df)
     # print(df)
-    contourplot(df)
+    contourplot(df,lang)
     alpha = 8
     ma = 10**8
     mb =ma*mb_range
