@@ -33,11 +33,35 @@ B = alpha*mu/2
 Ta = 0.2*10**6*(ma/(100*10**9))**(3/2)*(1/(100*alpha))
 Tny = Ta*kappa**(-1/3)/sqrt(np.pi)
 
-def g_s(T):
-    return 2+2*8*(T>200*10**6)+ 7/8*(2*2*(T>0.5/3*10**6))+ 2*2*(T>100/3*10**6) + 2*2*(T>2/3*10**9) + 2*1*3*(T>=10**6)+2*1*3*4/11*(T<10**6)+ 2*2*3*2*(T>200*10**6) + 2*2*3*(T>200*10**6) + 2*2*3*(T>1.8/3*10**9) + 2*2*3*(T>4.5/3*10**9)+ 7/8*2*2*3*(T>171/3*10**9)
-def g_e(T):
-    return 2+2*8*(T>200*10**6)+ 7/8*(2*2*(T>0.5/3*10**6))+ 2*2*(T>100/3*10**6) + 2*2*(T>2/3*10**9) + 2*1*3*(T>=10**6)+ 2*1*3*(4/11)**(4/3)*(T<10**6)+ 2*2*3*2*(T>200*10**6) + 2*2*3*(T>200*10**6) + 2*2*3*(T>1.8/3*10**9) + 2*2*3*(T>4.5/3*10**9)+ 7/8*2*2*3*(T>171/3*10**9)
 
+def smooth_step(T, T1):
+    """ Smooth transition around T1 with parameter k using arctan,
+        returns 0 or 1 for values far from T1 to speed up computation """
+    k=1/T1**(0.8)
+    if T<T1*0.5:
+        return 0 
+    elif T>T1*2:
+        return 1  
+    else:
+        return (1 + 2*np.arctan(k * (T - T1)) / np.pi )
+def g_s(T):
+    return 2+2*8*smooth_step(T,200*10**6)+ 7/8*(2*2*smooth_step(T,0.5/3*10**6))+ 2*2*smooth_step(T,100/3*10**6) + 2*2*smooth_step(T,2/3*10**9) + 2*1*3*smooth_step(T,10**6)+2*1*3*4/11*smooth_step(T,10**6)+ 2*2*3*2*smooth_step(T,200*10**6) + 2*2*3*smooth_step(T,200*10**6) + 2*2*3*smooth_step(T,1.8/3*10**9) + 2*2*3*smooth_step(T,4.5/3*10**9)+ 7/8*2*2*3*smooth_step(T,171/3*10**9)
+def g_e(T):
+    """ Smooth version of g_e function """
+    return (
+        2 +
+        2 * 8 * smooth_step(T, 200 * 10**6) +
+        7 / 8 * (2 * 2 * smooth_step(T, 0.5 / 3 * 10**6)) +
+        2 * 2 * smooth_step(T, 100 / 3 * 10**6) +
+        2 * 2 * smooth_step(T, 2 / 3 * 10**9) +
+        2 * 1 * 3 * smooth_step(T, 10**6) +
+        2 * 1 * 3 * 4 / 11 * smooth_step(T, 10**6) +
+        2 * 2 * 3 * 2 * smooth_step(T, 200 * 10**6) +
+        2 * 2 * 3 * smooth_step(T, 200 * 10**6) +
+        2 * 2 * 3 * smooth_step(T, 1.8 / 3 * 10**9) +
+        2 * 2 * 3 * smooth_step(T, 4.5 / 3 * 10**9) +
+        7 / 8 * 2 * 2 * 3 * smooth_step(T, 171 / 3 * 10**9)
+    )
 
 def H(t):
     # Hubble const on RD and MD from temperature
@@ -83,13 +107,13 @@ def kriteria(alp_range,m_range,mb):
             if krit>0.98:
                 dens1.append(0)
             else:
-                dens1.append(float(-np.log10(krit)))
+                dens1.append((1-krit))
         dens[k]=dens1
         dens1=[]
         print(k+1,"/",points,"  itteration")
         k+=1
     df = pd.DataFrame(dens, index=alp_range,columns=m_range)
-    df.to_csv('data.csv')
+    df.to_csv('data_nolog.csv')
 
 def calc(alpha,ma,mb):
     """
@@ -174,12 +198,12 @@ def contourplot(df,lang,x0=10**8,y0=8):
     graph_name = "contourplot_lim.png"
     if lang == "rus":
         lab1 = 'Значения относительной плотности'
-        lab2 = r'Значения относительной плотности: $-\log{\frac{r}{r_0}}$'
+        lab2 = r'Относительная плотность прорекомбинировавших частиц: ${1-{r_{lim}}/{r_0}}$'
         title1 = 'Относительная плотность прорекомбинировавших частиц для различных параметров модели'
         lab3 = "На другом графике"
     elif lang == "eng":
         lab1 = "Reletive densety"
-        lab2 = r'Limiting relative density: $-\log{\frac{r}{r_0}}$'
+        lab2 = r'Limiting relative density: ${1-{r_{lim}}/{r_0}}$'
         lab3 = "on another plot"
         title1 = "Reletive density of recombined particles for different model parameters"
     # Создаем фигуру и оси графика
@@ -190,7 +214,7 @@ def contourplot(df,lang,x0=10**8,y0=8):
     z = df.values
     colormap = plt.cm.get_cmap("coolwarm").copy()
     # Создаем контурный график с логарифмическим масштабом по обеим осям
-    cf = ax.contourf(x, y, z, levels=50, cmap=colormap, alpha=0.9)
+    cf = ax.contourf(x, y, z, levels=30, cmap=colormap, alpha=0.9)
     cbar = fig.colorbar(cf, ax=ax)
     ax.set_xscale('log')
 
@@ -208,7 +232,7 @@ def contourplot(df,lang,x0=10**8,y0=8):
         paths = cf.collections[i-1].get_paths()
         for path in paths:
             x, y = path.vertices[2:, :].mean(0)
-            if i%4 ==0 and not(level in levels_done):
+            if i%5 ==0 and not(level in levels_done):
                 plt.text(x, y, f'{level:.2f}', fontsize=10, color='black')
                 levels_done.append(level)
     # Добавляем сглаживание краев контуров
@@ -226,31 +250,6 @@ def contourplot(df,lang,x0=10**8,y0=8):
     plt.tight_layout()
     plt.savefig(PICPATH+graph_name)
     plt.show()
-
-def heatplot(df,lang):
-    global PICPATH
-    graph_name = "heatplot_lim.png"
-    if lang == "rus":
-        lab1 = 'Значения относительной плотности'
-        title1 = 'Относительная плотность прорекомбинировавших частиц для различных параметров модели'
-    elif lang == "eng":
-        lab1 = "Reletive densety"
-        title1 = "Reletive density of recombined particles for different model parameters"
-    # heatplot of maximal denity for different model parameters
-    sns.set_theme(style="dark")
-    sns.set_style("ticks")
-    fig, ax = plt.subplots(figsize=(9, 6))
-    sns.heatmap(df, annot=True, linewidths=.5, ax=ax, cmap='coolwarm', cbar_kws={'label': lab1})
-    ax.set(xlabel=r'$m_a$, eV', ylabel=r'$\alpha_y$', title=title1)
-    ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: f'$10^{{{(x-0.5):.0f}}}$'))
-    ylabels = ["{:0.1f}".format(float(item.get_text())) 
-                 for item in ax.get_yticklabels()] 
-    xlabels = ["$10^{%0.0f}$"%(np.log10(float(item.get_text()))) for item in ax.get_xticklabels()]
-    ax.set_yticklabels(ylabels)
-    ax.set_xticklabels(xlabels)
-    plt.xticks(rotation=0)
-    plt.savefig(PICPATH+graph_name)
-    plt.show(block=False)
 
 def lim_graph(T,rk,r3,rcl,rlim,lang):
     global PICPATH
@@ -284,7 +283,7 @@ def lim_graph(T,rk,r3,rcl,rlim,lang):
             r'$\alpha = $'+repr(alpha), 
             fontsize=12, bbox={'facecolor': '#FFFFFF', 'alpha': 0.9, 'pad': 10})
 
-    ax.set_xlim([10**6, 10**4])
+    ax.set_xlim([10**6.5, 10**4.5])
     ax.set_ylim([10**(-4), 10**(1)])
     ax.tick_params(labelsize=14)
 
@@ -388,30 +387,29 @@ def main():
     print(ali)
     alp_range = np.linspace(0,10,points)
     m_range = np.logspace(1,15,points)
-    if logic == 1:
-        try:
-            df = pd.read_csv('data.csv')
-        except FileNotFoundError:
-            print(u'Saved data not found')
-            df = kriteria(alp_range,m_range,mb_range)
-    elif logic == 0:
-        kriteria(alp_range,m_range,mb_range)
-    else:
-        pass
+    # if logic == 1:
+    #     try:
+    #         df = pd.read_csv('data_nolog.csv')
+    #     except FileNotFoundError:
+    #         print(u'Saved data not found')
+    #         df = kriteria(alp_range,m_range,mb_range)
+    # elif logic == 0:
+    #     kriteria(alp_range,m_range,mb_range)
+    # else:
+    #     pass
         
     [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
     kramers_graph(T,rk,r3,rcl,rlim,lang)
     classkram3body_graph(T,rk,r3,rcl,rlim,lang)
-    df = pd.read_csv('data.csv', index_col=0)
-    # heatplot(df)
-    # print(df)
-    alpha = 8
+    lim_graph(T,rk,r3,rcl,rlim,lang)
+    df = pd.read_csv('data_nolog.csv', index_col=0)
+    alpha = 4
     ma = 10**8
     
-    contourplot(df,lang,ma,alpha)
-    mb =ma*mb_range
-    [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
-    lim_graph(T,rk,r3,rcl,rlim,lang)
+    # contourplot(df,lang,ma,alpha)
+    # mb =ma*mb_range
+    # [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
+    # lim_graph(T,rk,r3,rcl,rlim,lang)
 
     plt.show()
     # [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
