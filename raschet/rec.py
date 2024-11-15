@@ -1,37 +1,24 @@
-
+#rec.py
 from math import gamma as Gamma
 import numpy as np
 from numpy import sqrt as sqrt
 import matplotlib.pyplot as plt
 from matplotlib import colors,ticker
-from scipy import integrate 
-import seaborn as sns
 import pandas as pd
 
-
+from tqdm import tqdm
 
 
 #consts
 #E ~ eV
-ma = 100*10**9 #ev
-mb = 1*10**12 #ev
-alpha = 1/10 #none
-
 beta = 14/5 
-sigma = 8*np.pi*(alpha/ma)**2/3
 r0 = 4.7*10**(-13) #r T_rec
 T0 = 2.35*10**(-4) #our time
 m_pl = 1.22*10**(19+9) #plank mass ev
 h_md = 3.08*10**(-14)  #from artile
 t_rm = 1.2             #time of rd md transition
 t_mod = 4.4*10**(17+16)/(6.582) #
-I = ma*alpha*alpha/2 #ev Ionisation potential
-mu = ma*mb/(ma+mb)  #reduced weight
-s0 = (4*np.pi)**(2/5) *np.pi* (alpha/mu)**2 #coef in kramers
 kappa = 43/345  
-B = alpha*mu/2 
-Ta = 0.2*10**6*(ma/(100*10**9))**(3/2)*(1/(100*alpha))
-Tny = Ta*kappa**(-1/3)/sqrt(np.pi)
 
 
 def smooth_step(T, T1):
@@ -72,7 +59,7 @@ def H(t):
         return 5.5*np.sqrt(g_e(t_rm)/11)/m_pl
         
 
-def lim_3b(x):
+def lim_3b(x,Ta):
     """
     Function that calculs limit on 3body recombination density
 
@@ -80,13 +67,21 @@ def lim_3b(x):
     
     return list of density of unrecombined particles
     """
-    r_pit = (Ta**2/(x**4)) / ((4*np.pi*alpha)**3 *r0*(2*np.pi**2*g_s(x)/45)*sqrt(ma/mb))
+    r_pit = (Ta**2/(x**4)) / ((4*np.pi*alpha)**3 *r0*(2*np.pi**2* g_s(x) / 45)*sqrt(ma/mb))
     return r_pit
         
+def lim_observ(T,r,Ta):
+    """
+    Observational limit on crosssection: 0.1 < sigma/m < 1 g/sm
+    in GeV^-3: 5.61*10^3 < sigma/m < 5.61*10^4 GeV^-3
+    in eV^-3: 5*10^-24 < sigma/m < 5*10^-23 eV^-3
+    sigma/m ~ beta/T =>  10^-24<beta<10^-22 ev^-3
 
-
+    This function returns beta/T function
+    """
+    return r * (2*np.pi**2* g_s(T) / 45)  *T^3 *(ma**(1/2)/mb) * (4*np.pi*alpha)**5  * (Ta**(1/2)/T)**11
     
-def kriteria(alp_range,m_range,mb):
+def kriteria(alp_range,m_range,mb_range):
     """
     Creation of dataframe of maximal density of recombined particles from different alpha and ma (model parameters)
 
@@ -98,20 +93,17 @@ def kriteria(alp_range,m_range,mb):
     create csv file of dataframe
     """
     dens = [0]*len(alp_range)
-    dens1 = []
-    k=0
-    for a in alp_range:
+    for k, a in tqdm(enumerate(alp_range), ncols=100,total=len(alp_range), desc='Calculating'):
+        dens1 = []  # Переменная для хранения текущего результата
         for m in m_range:
-            [T,rk,r3,rc,rlim] = calc(a,m,m*mb)
+            [T, rk, r3, rc, rlim] = calc(a, m, m * mb_range)
             krit = r3[np.argmin(np.abs(np.array(r3) - np.array(rlim)))]
-            if krit>0.98:
+            if krit > 0.98:
                 dens1.append(0)
             else:
-                dens1.append((1-krit))
-        dens[k]=dens1
-        dens1=[]
-        print(k+1,"/",points,"  itteration")
-        k+=1
+                dens1.append((1 - krit))
+        dens[k] = dens1  # Записываем результат
+
     df = pd.DataFrame(dens, index=alp_range,columns=m_range)
     df.to_csv('data_nolog.csv')
 
@@ -137,6 +129,12 @@ def calc(alpha,ma,mb):
     Returns:
         list: A list containing the temperature-dependent rates for various processes.
     """
+
+    I = ma*alpha*alpha/2 #ev Ionisation potential
+    mu = ma*mb/(ma+mb)  #reduced weight
+    s0 = (4*np.pi)**(2/5) *np.pi* (alpha/mu)**2 #coef in kramers
+    B = alpha*mu/2 
+    Ta = 0.2*10**6*(ma/(100*10**9))**(3/2)*(1/(100*alpha))
     T = [] # Temperature of photons
     z = [] #redshift
     rk = [] # r for kramerz
@@ -148,7 +146,7 @@ def calc(alpha,ma,mb):
     rk = [1] #initial r=1 Kramers case
     r3b = [1] #3body case
     rcl = [1] #classical
-    rlim =[lim_3b(T[i])] #pitevski lim
+    rlim =[lim_3b(T[i],Ta)] #pitevski lim
 
     #until O-photons decouple
     while T[i]>(I/10)*kappa**(-1/3):
@@ -157,7 +155,7 @@ def calc(alpha,ma,mb):
         rk = rk + [1]
         r3b = r3b+[1]
         rcl = rcl+[1]
-        rlim = rlim + [lim_3b(T[i])]
+        rlim = rlim + [lim_3b(T[i],Ta)]
         z.append(T[i]/T0 -1)
 
     # until RD MD transition
@@ -169,10 +167,9 @@ def calc(alpha,ma,mb):
         rk = rk + [(1+4.71*10**8*r0*((np.log(np.sqrt(I*Ta/T[i])))**2-(np.log(np.sqrt(I*Ta/T[j])))**2))**(-1)]
         D = (2*np.pi**2*g_s(T[i])/45)**2 * (4*np.pi*alpha)**5 * (2*np.sqrt(ma)*Ta**(9/2)/mb) / H(T[i])   
         r3b = r3b + [(1+ D*2/5*r0*r0*(T[i]**(-5)-I**(-5)))**(-1/2)]
-        
         Dcl = Gamma(2-beta/2)*g_s(T[i])*s0*m_pl*(mu*Ta)**((beta-1)/2)/ ((beta-2)*2**((beta-3)/2)*np.sqrt(45*g_s(T[j])))
         rcl = rcl + [(1+Dcl*r0*(T[i]**(2-beta)-T[j]**(2-beta)))**(-1)]
-        rlim = rlim + [lim_3b(T[i])]
+        rlim = rlim + [lim_3b(T[i],Ta)]
         
     #until now
     j=i
@@ -188,13 +185,12 @@ def calc(alpha,ma,mb):
         r3b = r3b +[r3b_rm*(1+D*r3b_rm*r3b_rm*r0*r0* 4/9 * (T[i]**(-9/2)-T[j]**(-9/2)))**(-1/2)]
         Dcl = Gamma(2-beta/2)*g_s(T[i])*s0*m_pl*(mu*Ta)**((beta-1)/2)/ ((beta-2.5)*2**((beta-3)/2)*np.sqrt(45*g_s(T[j])))/np.sqrt(t_rm)
         rcl = rcl + [rcl_rm*(1+Dcl*rcl_rm*r0*(T[i]**(2.5-beta)-T[j]**(2.5-beta)))**(-1)]
-        rlim = rlim + [lim_3b(T[i])]       
+        rlim = rlim + [lim_3b(T[i],Ta)]       
 
     return [T,rk,r3b,rcl,rlim]
     
 
-def contourplot(df,lang,x0=10**8,y0=8):
-    global PICPATH
+def contourplot(df,lang="eng",PICPATH="/home/kds/sci/threebody/pics/",x0=10**8,y0=8):
     graph_name = "contourplot_lim.png"
     if lang == "rus":
         lab1 = 'Значения относительной плотности'
@@ -212,12 +208,12 @@ def contourplot(df,lang,x0=10**8,y0=8):
     x = np.array(df.columns, dtype=float)
     y = np.array(df.index, dtype=float)
     z = df.values
-    colormap = plt.cm.get_cmap("coolwarm").copy()
+    colormap = plt.colormaps["coolwarm"].copy()
     # Создаем контурный график с логарифмическим масштабом по обеим осям
     cf = ax.contourf(x, y, z, levels=30, cmap=colormap, alpha=0.9)
     cbar = fig.colorbar(cf, ax=ax)
     ax.set_xscale('log')
-
+    ax.set_yscale('log')
     cbar.set_label(lab2,fontsize = 20)
     # cbar.set_label(r'Значения относительной плотности: $-\log{\frac{r}{r_0}}$',fontsize = 20)
     
@@ -249,10 +245,9 @@ def contourplot(df,lang,x0=10**8,y0=8):
     # Устанавливаем отступы между подписями и графиком
     plt.tight_layout()
     plt.savefig(PICPATH+graph_name)
-    plt.show()
+    plt.show(block=False)
 
-def lim_graph(T,rk,r3,rcl,rlim,lang):
-    global PICPATH
+def lim_graph(T,rk,r3,rcl,rlim,lang="eng",PICPATH="/home/kds/sci/threebody/pics/"):
     graph_name = "lim_graph.png"
     if lang == "eng":
         lab = "Applicability range"
@@ -265,6 +260,7 @@ def lim_graph(T,rk,r3,rcl,rlim,lang):
         lab2 = "Трехчастичная рекомбинация"
         lab3 = "Классическая рекомбинация"
 
+    krit = np.argmin(np.abs(np.array(r3) - np.array(rlim)))
     # graphplotter used to plot r(T) graphs
     fig, ax = plt.subplots(1,1, figsize = (8,6))
 
@@ -277,32 +273,29 @@ def lim_graph(T,rk,r3,rcl,rlim,lang):
     ax.set_xlabel('T, eV', fontsize=16)
     ax.set_ylabel(r'$r/r_0$', fontsize=16)
 
-    ax.text(10**(5.8), 10**(-3),
-            r'$m_a = 10^{%0.0f}$ eV'%(np.log10(ma))+"\n"+
-            r'$m_b = 10^{%0.0f}$ eV'%(np.log10(mb))+"\n"+
-            r'$\alpha = $'+repr(alpha), 
+    ax.text(10**(0.9+np.ceil(np.log10(T[krit]))), 10 ** (-3),
+            r'$m_a = 10^{%0.0f}$ eV' % (np.log10(ma)) + "\n" +
+            r'$m_b = 10^{%0.0f}$ eV' % (np.log10(mb)) + "\n" +
+            r'$\alpha = $' + repr(alpha),
             fontsize=12, bbox={'facecolor': '#FFFFFF', 'alpha': 0.9, 'pad': 10})
 
-    ax.set_xlim([10**6.5, 10**4.5])
-    ax.set_ylim([10**(-4), 10**(1)])
+    ax.set_xlim([ 10**(1+np.ceil(np.log10(T[krit])))  ,  10**(np.floor(np.log10(T[krit])))])
+    ax.set_ylim([10 ** (-4), 10 ** (1)])
     ax.tick_params(labelsize=14)
 
-    ax.grid(color='gray', linestyle='--', linewidth=1, alpha=0.5)
-    leg = ax.legend(fontsize=14)
-    leg.get_frame().set_linewidth(0.0)
-    leg.get_frame().set_facecolor('#FFFFFF')
-    leg.get_frame().set_alpha(0.9)
-
-    plt.semilogx()
-    plt.semilogy()
+    ax.grid(color='lightgray', linestyle=':', linewidth=0.5, alpha=0.7)
+    ax.legend(fontsize=14)
+    ax.fill_between(T, rlim, ax.get_ylim()[1], alpha=0.3, color='green')
     
-    ax.fill_between(T, rlim, ax.get_ylim()[1], alpha=0.5, color='#B1FA9A', hatch='//',edgecolor='green')
-    plt.box(False)
-    plt.savefig(PICPATH+graph_name)
+
+    plt.xscale('log')
+    plt.yscale('log')
+    
+    plt.tight_layout()  # Оптимизирует расположение элементов
+    plt.savefig(PICPATH + graph_name, dpi=300, bbox_inches='tight')  # Сохраняем в высоком разрешении
     plt.show(block=False)
 
-def classkram3body_graph(T,rk,r3,rcl,rlim,lang):
-    global PICPATH
+def classkram3body_graph(T,rk,r3,rcl,rlim,lang="eng",PICPATH="/home/kds/sci/threebody/pics/"):
     graph_name = "classkramthreebody.png"
     if lang == "eng":
         lab1 = "Radiative recombinaton"
@@ -346,8 +339,7 @@ def classkram3body_graph(T,rk,r3,rcl,rlim,lang):
     plt.show(block=False)
 
 
-def kramers_graph(T,rk,r3,rcl,rlim,lang):
-    global PICPATH
+def kramers_graph(T,rk,r3,rcl,rlim,lang="eng",PICPATH="/home/kds/sci/threebody/pics/"):
     graph_name = "kramers_graph.png"
     if lang == "eng":
         lab1 = "Radiative recombinaton"
@@ -378,38 +370,43 @@ logic = 1
 lang = "eng"
 PICPATH = "/home/kds/sci/threebody/pics/"
 err=10**(-3)
-points = 100
-mb_range = 10
+points = 50
+mb_range = 10 #=mb/ma
 
 def main():
-    global ma,alpha,mb,lang
+    global ma,alpha,mb,lang,PICPATH
+    ma = 100*10**9 #ev
+    mb = ma*mb_range #ev
+    alpha = 1/10 #none
+
     ali = 1/((ma/mb)**(3/2)*alpha**3*(2*np.pi**2*g_s(T0)/45))
     print(ali)
-    alp_range = np.linspace(0,10,points)
-    m_range = np.logspace(1,15,points)
-    # if logic == 1:
-    #     try:
-    #         df = pd.read_csv('data_nolog.csv')
-    #     except FileNotFoundError:
-    #         print(u'Saved data not found')
-    #         df = kriteria(alp_range,m_range,mb_range)
-    # elif logic == 0:
-    #     kriteria(alp_range,m_range,mb_range)
-    # else:
-    #     pass
+    alp_range = np.logspace(-1,1,points)
+    m_range = np.logspace(11,15,points)
+    if logic == 1:
+        try:
+            df = pd.read_csv('data_nolog.csv')
+        except FileNotFoundError:
+            print(u'Saved data not found')
+            df = kriteria(alp_range,m_range,mb_range)
+    elif logic == 0:
+        kriteria(alp_range,m_range,mb_range)
+    else:
+        pass
         
     [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
-    kramers_graph(T,rk,r3,rcl,rlim,lang)
-    classkram3body_graph(T,rk,r3,rcl,rlim,lang)
-    lim_graph(T,rk,r3,rcl,rlim,lang)
+    # kramers_graph(T,rk,r3,rcl,rlim,lang)
+    # classkram3body_graph(T,rk,r3,rcl,rlim,lang)
+    lim_graph(T,rk,r3,rcl,rlim,lang,PICPATH)
     df = pd.read_csv('data_nolog.csv', index_col=0)
-    alpha = 4
-    ma = 10**8
-    
-    # contourplot(df,lang,ma,alpha)
-    # mb =ma*mb_range
-    # [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
-    # lim_graph(T,rk,r3,rcl,rlim,lang)
+
+    alpha = 1
+    ma = 10**14
+    mb = ma*mb_range
+    # contourplot(df,lang,PICPATH,ma,alpha)
+    [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
+    lim_graph(T,rk,r3,rcl,rlim,lang,PICPATH)
+    # classkram3body_graph(T,rk,r3,rcl,rlim,lang)
 
     plt.show()
     # [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
