@@ -26,13 +26,13 @@ kappa = 43/345
 def smooth_step(T, T1):
     """ Smooth transition around T1 with parameter k using arctan,
         returns 0 or 1 for values far from T1 to speed up computation """
-    k=1/T1**(0.8)
-    if T<T1*0.5:
+    k=5/T1
+    if T<T1*0.1:
         return 0 
-    elif T>T1*2:
+    elif T>T1*10:
         return 1  
     else:
-        return (1 + 2*np.arctan(k * (T - T1)) / np.pi )
+        return (1/2 + np.arctan(k * (T - T1)) / np.pi )
 def g_s(T):
     return 2+2*8*smooth_step(T,200*10**6)+ 7/8*(2*2*smooth_step(T,0.5/3*10**6))+ 2*2*smooth_step(T,100/3*10**6) + 2*2*smooth_step(T,2/3*10**9) + 2*1*3*smooth_step(T,10**6)+2*1*3*4/11*smooth_step(T,10**6)+ 2*2*3*2*smooth_step(T,200*10**6) + 2*2*3*smooth_step(T,200*10**6) + 2*2*3*smooth_step(T,1.8/3*10**9) + 2*2*3*smooth_step(T,4.5/3*10**9)+ 7/8*2*2*3*smooth_step(T,171/3*10**9)
 def g_e(T):
@@ -424,7 +424,7 @@ def kramers_graph(T,rk,r3,rcl,rlim,lang="eng",PICPATH="/home/kds/sci/threebody/p
 
 
 #LOGIC -- 1 download data, else generate new
-logic = 1
+logic = 0
 lang = "eng"
 PICPATH = "/home/kds/sci/threebody/pics/"
 err=10**(-3)
@@ -435,15 +435,16 @@ def main():
     global ma,alpha,mb,lang,PICPATH
     ma = 100*10**9 #ev
     mb = ma*mb_range #ev
-    alpha = 1/10 #none
-
+    alpha = 1/100 #none
+    
     ali = 1/((ma/mb)**(3/2)*alpha**3*(2*np.pi**2*g_s(T0)/45))
     print(ali)
+
+    name = "data_nolog_"+str(points)+".scv"
     alp_range = np.logspace(-1,1,points)
     m_range = np.logspace(11,15,points)
     if logic == 1:
         try:
-            name = "data_nolog_"+str(points)+".scv"
             df = pd.read_csv(name)
         except FileNotFoundError:
             print(u'Saved data not found')
@@ -455,7 +456,7 @@ def main():
         
     [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
     # kramers_graph(T,rk,r3,rcl,rlim,lang)
-    # classkram3body_graph(T,rk,r3,rcl,rlim,lang)
+    classkram3body_graph(T,rk,r3,rcl,rlim,lang)
     # lim_graph(T,rk,r3,rcl,rlim,lang,PICPATH)
     df = pd.read_csv(name, index_col=0)
 
