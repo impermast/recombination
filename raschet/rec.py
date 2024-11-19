@@ -1,5 +1,7 @@
 #rec.py
 from math import gamma as Gamma
+from scipy.ndimage import gaussian_filter
+
 import numpy as np
 from numpy import sqrt as sqrt
 import matplotlib.pyplot as plt
@@ -70,16 +72,15 @@ def lim_3b(x,Ta):
     r_pit = (Ta**2/(x**4)) / ((4*np.pi*alpha)**3 *r0*(2*np.pi**2* g_s(x) / 45)*sqrt(ma/mb))
     return r_pit
         
-def lim_observ(T,r,Ta):
+def exp_constrait(alpha, m):
+    
     """
     Observational limit on crosssection: 0.1 < sigma/m < 1 g/sm
-    in GeV^-3: 5.61*10^3 < sigma/m < 5.61*10^4 GeV^-3
-    in eV^-3: 5*10^-24 < sigma/m < 5*10^-23 eV^-3
-    sigma/m ~ beta/T =>  10^-24<beta<10^-22 ev^-3
+    m0 = 100GeV in eV, alpha0 = 0.01, v=200 km/s
 
-    This function returns beta/T function
+    This function returns sigma/m function for retherford cross
     """
-    return r * (2*np.pi**2* g_s(T) / 45)  *T^3 *(ma**(1/2)/mb) * (4*np.pi*alpha)**5  * (Ta**(1/2)/T)**11
+    return 1.43* (alpha/0.01)**2 / (m/(100*10**9))**3
     
 def kriteria(alp_range,m_range,mb_range):
     """
@@ -92,6 +93,8 @@ def kriteria(alp_range,m_range,mb_range):
 
     create csv file of dataframe
     """
+    points = len(alp_range)
+    name = "data_nolog_"+str(points)+".scv"
     dens = [0]*len(alp_range)
     for k, a in tqdm(enumerate(alp_range), ncols=100,total=len(alp_range), desc='Calculating'):
         dens1 = []  # Переменная для хранения текущего результата
@@ -105,7 +108,7 @@ def kriteria(alp_range,m_range,mb_range):
         dens[k] = dens1  # Записываем результат
 
     df = pd.DataFrame(dens, index=alp_range,columns=m_range)
-    df.to_csv('data_nolog.csv')
+    df.to_csv(name)
 
 def calc(alpha,ma,mb):
     """
@@ -190,6 +193,60 @@ def calc(alpha,ma,mb):
     return [T,rk,r3b,rcl,rlim]
     
 
+def contour_with_constraints(df, lang="eng", PICPATH="/home/kds/sci/threebody/pics/"):
+
+    
+    graph_name = "contour_with_constraints.png"
+
+    # Установки для текста
+    if lang == "rus":
+        lab1 = 'Значения относительной плотности'
+        lab2 = r'Относительная плотность прорекомбинировавших частиц: ${1-{r_{lim}}/{r_0}}$'
+        title1 = 'Относительная плотность прорекомбинировавших частиц для различных параметров модели'
+    elif lang == "eng":
+        lab1 = "Relative density"
+        lab2 = r'Limiting relative density: ${1-{r_{lim}}/{r_0}}$'
+        title1 = "Relative density of recombined particles for different model parameters"
+
+    # Создаем фигуру и оси графика
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    # Данные из DataFrame
+    x = np.array(df.columns, dtype=float)
+    y = np.array(df.index, dtype=float)
+    z = df.values
+    z = gaussian_filter(z, sigma=4)  # sigma определяет степень сглаживания
+
+
+    # Основной контурный график
+    colormap = plt.colormaps["coolwarm"].copy()
+    cf = ax.contourf(x, y, z, levels=30, cmap=colormap, alpha=0.9)
+    cbar = fig.colorbar(cf, ax=ax)
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    cbar.set_label(lab2, fontsize=20)
+
+    ax.set_xlabel(r'$m_a$, eV', fontsize=20)
+    ax.set_ylabel(r'$\alpha_y$', fontsize=20)
+
+    # Вычисляем значения exp_constrait(alpha, m)
+    X, Y = np.meshgrid(x, y)
+    Z_constraint = exp_constrait(Y, X)
+    B, A = 0.1, 1 
+    ax.contour(X, Y, Z_constraint, levels=[B, A], colors='purple', linewidths=5, linestyles='-')  # Контурные линии
+    constraint_mask = (Z_constraint >= B) & (Z_constraint <= A)
+    ax.contourf(X, Y, constraint_mask, levels=[0.5, 1], colors='purple', alpha=0.3)
+
+
+    ax.grid(False)
+    ax.tick_params(labelsize=14)
+    ax.title.set_size(16)
+    cbar.ax.tick_params(labelsize=14)
+    plt.tight_layout()
+    plt.savefig(PICPATH + graph_name)
+    plt.show()
+
+
 def contourplot(df,lang="eng",PICPATH="/home/kds/sci/threebody/pics/",x0=10**8,y0=8):
     graph_name = "contourplot_lim.png"
     if lang == "rus":
@@ -202,12 +259,13 @@ def contourplot(df,lang="eng",PICPATH="/home/kds/sci/threebody/pics/",x0=10**8,y
         lab2 = r'Limiting relative density: ${1-{r_{lim}}/{r_0}}$'
         lab3 = "on another plot"
         title1 = "Reletive density of recombined particles for different model parameters"
-    # Создаем фигуру и оси графика
-    fig, ax = plt.subplots(figsize=(12, 8))
-    # Используем массивы NumPy для данных
+
     x = np.array(df.columns, dtype=float)
     y = np.array(df.index, dtype=float)
     z = df.values
+    z = gaussian_filter(z, sigma=4)
+
+    fig, ax = plt.subplots(figsize=(12, 8))
     colormap = plt.colormaps["coolwarm"].copy()
     # Создаем контурный график с логарифмическим масштабом по обеим осям
     cf = ax.contourf(x, y, z, levels=30, cmap=colormap, alpha=0.9)
@@ -216,10 +274,10 @@ def contourplot(df,lang="eng",PICPATH="/home/kds/sci/threebody/pics/",x0=10**8,y
     ax.set_yscale('log')
     cbar.set_label(lab2,fontsize = 20)
     # cbar.set_label(r'Значения относительной плотности: $-\log{\frac{r}{r_0}}$',fontsize = 20)
-    
     ax.set_xlabel(r'$m_a$, eV', fontsize=20)
     ax.set_ylabel(r'$\alpha_y$', fontsize=20)
-    # Добавляем значение уровней контуров в центре каждого контура
+
+
     levels = cf.levels
     levels_done = []
     for i, level in enumerate(levels):
@@ -233,8 +291,8 @@ def contourplot(df,lang="eng",PICPATH="/home/kds/sci/threebody/pics/",x0=10**8,y
                 levels_done.append(level)
     # Добавляем сглаживание краев контуров
     cf.cmap.set_under('white')
-    # Добавляем сетку на график
-    ax.grid(True, which='both', linestyle='-', color='grey', alpha=0.2)
+    ax.grid(False) 
+    # ax.grid(False, which='both', linestyle='-', color='grey', alpha=0.2)
     # Устанавливаем размеры шрифтов на осях и заголовке
     ax.tick_params(labelsize=14)
     ax.title.set_size(16)
@@ -370,7 +428,7 @@ logic = 1
 lang = "eng"
 PICPATH = "/home/kds/sci/threebody/pics/"
 err=10**(-3)
-points = 50
+points = 100
 mb_range = 10 #=mb/ma
 
 def main():
@@ -385,7 +443,8 @@ def main():
     m_range = np.logspace(11,15,points)
     if logic == 1:
         try:
-            df = pd.read_csv('data_nolog.csv')
+            name = "data_nolog_"+str(points)+".scv"
+            df = pd.read_csv(name)
         except FileNotFoundError:
             print(u'Saved data not found')
             df = kriteria(alp_range,m_range,mb_range)
@@ -397,15 +456,16 @@ def main():
     [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
     # kramers_graph(T,rk,r3,rcl,rlim,lang)
     # classkram3body_graph(T,rk,r3,rcl,rlim,lang)
-    lim_graph(T,rk,r3,rcl,rlim,lang,PICPATH)
-    df = pd.read_csv('data_nolog.csv', index_col=0)
+    # lim_graph(T,rk,r3,rcl,rlim,lang,PICPATH)
+    df = pd.read_csv(name, index_col=0)
 
     alpha = 1
     ma = 10**14
     mb = ma*mb_range
-    # contourplot(df,lang,PICPATH,ma,alpha)
-    [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
-    lim_graph(T,rk,r3,rcl,rlim,lang,PICPATH)
+    contour_with_constraints(df,lang,PICPATH)
+    contourplot(df,lang,PICPATH,ma,alpha)
+    # [T,rk,r3,rcl,rlim] = calc(alpha,ma,mb)
+    # lim_graph(T,rk,r3,rcl,rlim,lang,PICPATH)
     # classkram3body_graph(T,rk,r3,rcl,rlim,lang)
 
     plt.show()
